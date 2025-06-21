@@ -1,14 +1,16 @@
+import { decode } from 'he';
 import { fetchData } from '@/utils/fetchData';
+import MultiSelect from '@/components/MultiSelect';
 
 const Home = async () => {
 	const categories = await fetchData<{ data: string[] }>('items.json');
+	const decodedCategories = categories?.data?.map((category) => decode(category)) || [];
 
 	return (
 		<section className="content-wrapper py-12">
-			<h1 className="font-heading text-xl">All product categories</h1>
-			<ul>
-				{categories?.data.map((category: string, index: number) => <li key={index}>{category}</li>)}
-			</ul>
+			{decodedCategories?.length > 0 && (
+				<MultiSelect title="Product categorieën" filterName="categorie" items={decodedCategories} />
+			)}
 		</section>
 	);
 };
